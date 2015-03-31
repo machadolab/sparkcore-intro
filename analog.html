@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <style type="text/css">
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+        #container {
+            width : 90%;
+            height: 384px;
+            margin: 8px auto;
+        }
+    </style>
+
+    <script type="text/javascript" src="flotr2.min.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+    <script type="text/javascript">
+
+        // info about our spark cloud account
+        var deviceId = '<your-device-id-here>';
+        var accessToken = '<your-access-token-here>';
+
+        var MAX_POINTS = 60; // max number of data points on the graph at any time
+
+        var UPDATE_INTERVAL = 1000; // how often (in ms) to get the current sensor value and update the graph
+
+
+
+        var points = []; // array to hold values to plot on the graph
+
+
+        function drawGraph() {
+
+            // only plot the last MAX_POINTS points
+            while (points.length > MAX_POINTS) {
+                points.pop();
+            }
+
+            // holds plot data in format flotr expects
+            var data = [];
+
+            // Convert data from raw points into flotr format
+            for (var i = 0; i < points.length; i++) {
+                data.push([i, points[i]]);
+            }
+
+            // Draw the actual graph
+            Flotr.draw(document.getElementById('container'), [ data ], {
+                yaxis : {
+                    max : 4095,
+                    min : -1
+                }
+            });
+        }
+
+
+        function startDataCollector() {
+
+            // start graph updater timer
+            setInterval(function () {
+
+                // get the current variable value from the device
+                $.getJSON("https://api.spark.io/v1/devices/"+deviceId+"/sensor?access_token="+accessToken, function(r) {
+
+                    // put current sensor value at the head of the points array
+                    points.unshift(r['result']);
+
+                    // update graph with new data
+                    drawGraph();
+
+                });
+
+            }, UPDATE_INTERVAL);
+
+        }
+
+
+        $(function() {
+
+            // seed initial data set
+            for (var i = 0; i < MAX_POINTS; i++) {
+                points.push(0);
+            }
+
+            // first draw
+            drawGraph();
+
+            // starts interval timer to repeatedly get sensor value
+            startDataCollector();
+
+        });
+
+    </script>
+</head>
+<body>
+<div id="container"></div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <style type="text/css">
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+        #container {
+            width : 600px;
+            height: 384px;
+            margin: 8px auto;
+            text-align: center;
+        }
+        .strikethrough {
+            position: relative;
+        }
+        .strikethrough:before {
+            position: absolute;
+            content: "";
+            left: -20px;
+            top: 50%;
+            right: -20px;
+            border-top: 5px solid;
+            border-color: #c5376d;
+
+            -webkit-transform:rotate(-45deg);
+            -moz-transform:rotate(-45deg);
+            -ms-transform:rotate(-45deg);
+            -o-transform:rotate(-45deg);
+            transform:rotate(-45deg);
+        }
+    </style>
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+    <script type="text/javascript">
+
+        var deviceId = '<your-device-id-here>';
+        var accessToken = '<your-access-token-here>';
+
+        function startEventSource() {
+
+            var es = new EventSource("https://api.spark.io/v1/devices/"+deviceId+"/events?access_token="+accessToken);
+
+            es.addEventListener('open', function(e) {
+                console.log("EventStream is open!");
+            }, false);
+
+            es.addEventListener('button', function(e) {
+
+                document.getElementById('meow').play();
+
+                var url = "http://thecatapi.com/api/images/get?format=src&type=gif&ts=" + (new Date()).getTime();
+                $('#cat').attr('src', url);
+
+            }, false);
+
+            es.addEventListener('error', function(e) {
+                console.log("EventStream error");
+                console.dir(e);
+            }, false);
+
+        }
+
+        $(function() {
+            // start listening for events from spark
+            startEventSource();
+        });
+
+    </script>
+</head>
+<body>
+
+    <div id="container">
+        <h1 style="font-size: 80px;">C<span class="strikethrough">h</span>atroulette</h1>
+        <img id="cat">
+    </div>
+
+    <audio id="meow" src="http://www.kessels.com/catsounds/cat9.wav" preload="auto"></audio>
+</body>
+</html>

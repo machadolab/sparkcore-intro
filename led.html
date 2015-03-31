@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<style>
+
+    body {
+        text-align: center;
+    }
+
+    .button {
+        display: inline-block;
+        margin: 10px;
+        border-radius: 8px;
+        transition: box-shadow .1s ease-in-out;
+        font-size: 50px;
+        color: #fff;
+    }
+
+    .button span {
+        display: inline-block;
+        padding: 20px 30px;
+        border-radius: 8px;
+        box-shadow: inset 0 -1px 1px rgba(255, 255, 255, .15);
+        font-family: 'Pacifico', Arial, sans-serif;
+        line-height: 1;
+        transition: background-color .2s ease-in-out, transform .1s ease-in-out;
+    }
+
+    .button:active span {
+        transform: translate(0, 4px);
+    }
+
+    #red_led:hover span {
+        background-color: #ec6a9c;
+        text-shadow: 0 -1px 1px rgba(175, 49, 95, .9), 0 0 5px rgba(255, 255, 255, .8);
+    }
+
+    #red_led:active, #red_led:focus {
+        box-shadow:    0 8px 0 #c5376d, 0 12px 10px rgba(0, 0, 0, .3);
+    }
+
+    #red_led {
+        box-shadow: 0 8px 0 #c5376d, 0 15px 20px rgba(0, 0, 0, .35);
+    }
+
+    #red_led span {
+        background-color: #ec528d;
+        background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(hsla(338, 90%, 80%, .8)), to(hsla(338, 90%, 70%, .2)));
+        text-shadow: 0 -1px 1px rgba(175, 49, 95, .7);
+    }
+
+
+    #green_led:hover span {
+        background-color: #93ec9c;
+        text-shadow: 0 -1px 1px rgba(66, 175, 44, 0.90), 0 0 5px rgba(255, 255, 255, .8);
+    }
+
+    #green_led:active, #green_led:focus {
+        box-shadow:    0 8px 0 #4cc515, 0 12px 10px rgba(0, 0, 0, .3);
+    }
+
+    #green_led {
+        box-shadow: 0 8px 0 #4cc515, 0 15px 20px rgba(0, 0, 0, .35);
+    }
+
+    #green_led span {
+        background-color: #a1ec66;
+        background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(hsla(118, 94%, 65%, 0.80)), to(hsla(111, 79%, 69%, 0.20)));
+        text-shadow: 0 -1px 1px rgba(34, 175, 69, 0.70);
+    }
+
+</style>
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+<script type="text/javascript">
+
+
+    var deviceId = '<your-device-id-here>';
+    var accessToken = '<your-access-token-here>';
+
+
+    $(function() {
+
+        $('.button').on('click', function(e) {
+
+            var led = $(this).data('led');
+
+            console.log("toggling led " + led);
+
+            $.post("https://api.spark.io/v1/devices/"+deviceId+"/toggle_led"+led, {access_token: accessToken}, function(resp) {
+                console.log("toggle call finished");
+            });
+
+        });
+
+    });
+
+</script>
+
+</head>
+<body>
+
+
+<a id="green_led" href="#" data-led="0" class="button">
+    <span>Toggle</span>
+</a>
+
+<a id="red_led" href="#" data-led="1" class="button">
+    <span>Toggle</span>
+</a>
+
+
+</body>
+</html>
