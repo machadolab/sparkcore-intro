@@ -1,7 +1,7 @@
 # Intro
 
 This repository contains example html/javascript files along with spark .ino code for demonstrating
-various [spark core][http://spark.io] functionality.
+various [spark core](http://spark.io) functionality.
 
 Specifically, there are 3 demos:
 
